@@ -1,9 +1,15 @@
 const { Router } = require('express');
-const { products } = require('../products');
+const ProductsController = require('../controllers/ProductsController');
+const productsController = new ProductsController();
+const multer = require('multer');
+const multerConfig = require('../config/multer');
+
 const productsRoutes = Router();
 
-productsRoutes.get('/products', (request, response) => {
-  response.json(products);
-});
+productsRoutes.post(
+  '/',
+  multer(multerConfig).single('img'),
+  productsController.create
+);
 
 module.exports = productsRoutes;
