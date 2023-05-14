@@ -4,6 +4,7 @@ exports.up = (knex) =>
     table.text('img');
     table.text('name');
     table.text('category');
+    table.text('tags');
     table.text('description');
     table.integer('price');
     table.timestamp('created_at').default(knex.fn.now());

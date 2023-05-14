@@ -12,4 +12,8 @@ productsRoutes.post(
   productsController.create
 );
 
+productsRoutes.get('/', productsController.index);
+productsRoutes.get('/:id', productsController.show);
+productsRoutes.delete('/:id', productsController.delete);
+
 module.exports = productsRoutes;
