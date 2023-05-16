@@ -5,7 +5,7 @@ class ProductsController {
   async create(request, response) {
     const { img, name, category, tags, price, description } = request.body;
 
-    const products_id = await knex('products').insert({
+    const products_ids = await knex('products').insert({
       img,
       name,
       category,
@@ -14,21 +14,29 @@ class ProductsController {
       description,
     });
 
-    const tagsInsert = tags.map((name) => {
+    const arrayTags = JSON.parse(tags);
+
+    const tagsInsert = arrayTags.map((name) => {
       return {
-        products_id,
+        products_id: products_ids[0],
         name,
       };
     });
+
     await knex('tags').insert(tagsInsert);
 
     return response.json();
   }
+
   async show(request, response) {
     const { id } = request.params;
 
     const product = await knex('products').where({ id }).first();
-    return response.json(product);
+    const tags = await knex('tags').where({ products_id: id }).orderBy('name');
+    return response.json({
+      ...product,
+      tags,
+    });
   }
 
   async delete(request, response) {
@@ -39,18 +47,16 @@ class ProductsController {
 
   async index(request, response) {
     const { name } = request.query;
+
+    const productsTags = await knex('tags')
+      .select(['products.id', 'products.name', 'products.tags'])
+      .innerJoin('products', 'products.id', 'tags.products_id');
+
     const products = await knex('products')
       .whereLike('name', `%${name}%`)
       .orderBy('name');
-    return response.json({ products });
+    return response.json({ productsTags });
   }
 }
 
 module.exports = ProductsController;
-
-// await knex('tags').insert(tagsInsert);
-// const database = await sqliteConnection();
-// await database.run(
-//   'INSERT INTO products (name, img, category, description, price) VALUES(?, ?, ?, ?, ?)',
-//   [img, name, category, tags, price, description]
-// );
