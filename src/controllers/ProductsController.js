@@ -46,15 +46,21 @@ class ProductsController {
   }
 
   async index(request, response) {
-    const { name } = request.query;
+    // const { name } = request.query;
 
     const productsTags = await knex('tags')
-      .select(['products.id', 'products.name', 'products.tags'])
+      .select([
+        'products.img',
+        'products.id',
+        'products.name',
+        'products.description',
+        'products.tags',
+      ])
       .innerJoin('products', 'products.id', 'tags.products_id');
 
-    const products = await knex('products')
-      .whereLike('name', `%${name}%`)
-      .orderBy('name');
+    // const products = await knex('products')
+    //   .whereLike('name', `%${name}%`)
+    //   .orderBy('name');
     return response.json({ productsTags });
   }
 }
