@@ -3,10 +3,9 @@ const AppError = require('../utils/AppError');
 const sqliteConnection = require('../database/sqlite');
 class ProductsController {
   async create(request, response) {
-    const { img, name, category, tags, price, description } = request.body;
+    const { name, category, tags, price, description } = request.body;
 
     const products_ids = await knex('products').insert({
-      img,
       name,
       category,
       tags,
