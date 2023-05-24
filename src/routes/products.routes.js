@@ -3,11 +3,11 @@ const ProductsController = require('../controllers/ProductsController');
 const productsController = new ProductsController();
 const ProductsImgController = require('../controllers/ProductsImgController');
 const productsImgController = new ProductsImgController();
-
 const ensureAuthenticated = require('../middleware/ensureAuthenticated');
 const multer = require('multer');
 const uploadConfig = require('../configs/upload');
 const productsRoutes = Router();
+
 const upload = multer(uploadConfig.MULTER);
 productsRoutes.post(
   '/',
@@ -15,9 +15,9 @@ productsRoutes.post(
   upload.single('img'),
   productsController.create
 );
-productsRoutes.get('/', productsController.index);
-productsRoutes.get('/:id', productsController.show);
-productsRoutes.delete('/:id', productsController.delete);
+productsRoutes.get('/', ensureAuthenticated, productsController.index);
+productsRoutes.get('/:id', ensureAuthenticated, productsController.show);
+productsRoutes.delete('/:id', ensureAuthenticated, productsController.delete);
 productsRoutes.patch(
   '/img',
   ensureAuthenticated,

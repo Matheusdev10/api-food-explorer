@@ -1,11 +1,14 @@
 const knex = require('../database/knex');
-const AppError = require('../utils/AppError');
-const sqliteConnection = require('../database/sqlite');
+const DiskStorage = require('../providers/DiskStorage');
+
 class ProductsController {
   async create(request, response) {
     const { name, category, tags, price, description } = request.body;
-
+    const imgFileName = request.file.filename;
+    const diskStorage = new DiskStorage();
+    const filename = await diskStorage.saveFile(imgFileName);
     const products_ids = await knex('products').insert({
+      img: filename,
       name,
       category,
       tags,
@@ -13,7 +16,7 @@ class ProductsController {
       description,
     });
 
-    const arrayTags = JSON.parse(tags);
+    const arrayTags = tags.split(', ');
 
     const tagsInsert = arrayTags.map((name) => {
       return {
