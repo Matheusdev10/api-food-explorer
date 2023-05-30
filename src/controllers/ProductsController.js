@@ -50,11 +50,13 @@ class ProductsController {
   async index(request, response) {
     // const { name } = request.query;
 
-    const productsTags = await knex('tags')
+    const products = await knex('tags')
       .select([
         'products.img',
         'products.id',
+        'products.category',
         'products.name',
+        'products.price',
         'products.description',
         'products.tags',
       ])
@@ -63,7 +65,7 @@ class ProductsController {
     // const products = await knex('products')
     //   .whereLike('name', `%${name}%`)
     //   .orderBy('name');
-    return response.json({ productsTags });
+    return response.json(products);
   }
 }
 
