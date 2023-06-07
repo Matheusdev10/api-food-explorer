@@ -16,28 +16,16 @@ class ProductsController {
       description,
     });
 
-    const arrayTags = tags.split(', ');
-
-    const tagsInsert = arrayTags.map((name) => {
-      return {
-        products_id: products_ids[0],
-        name,
-      };
-    });
-
-    await knex('tags').insert(tagsInsert);
-
     return response.json();
   }
 
   async show(request, response) {
     const { id } = request.params;
-
     const product = await knex('products').where({ id }).first();
-    const tags = await knex('tags').where({ products_id: id }).orderBy('name');
     return response.json({
       ...product,
-      tags,
+      tags: product.tags.split(','),
+      img: `http://localhost:3333/assets/${product.img}`,
     });
   }
 
@@ -48,24 +36,27 @@ class ProductsController {
   }
 
   async index(request, response) {
-    // const { name } = request.query;
+    const products = await knex('products').select([
+      'products.img',
+      'products.id',
+      'products.category',
+      'products.name',
+      'products.price',
+      'products.description',
+      'products.tags',
+    ]);
+    // preciso transformar as tags em um array de tags.
+    // o que é tag? (lista de palavra separada por virgula)
+    // onde esta a tag? (eu preciso ir no produto para pegar a tag)
+    // transformar em um array de string: dividir usando o metodo split para separar as strings
 
-    const products = await knex('tags')
-      .select([
-        'products.img',
-        'products.id',
-        'products.category',
-        'products.name',
-        'products.price',
-        'products.description',
-        'products.tags',
-      ])
-      .innerJoin('products', 'products.id', 'tags.products_id');
+    const productsTags = products.map((product) => ({
+      ...product,
+      tags: product.tags.split(','),
+      img: `http://localhost:3333/assets/${product.img}`,
+    }));
 
-    // const products = await knex('products')
-    //   .whereLike('name', `%${name}%`)
-    //   .orderBy('name');
-    return response.json(products);
+    return response.json(productsTags);
   }
 }
 

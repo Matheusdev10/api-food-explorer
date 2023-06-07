@@ -11,18 +11,12 @@ const productsRoutes = Router();
 const upload = multer(uploadConfig.MULTER);
 productsRoutes.post(
   '/',
-  ensureAuthenticated,
+
   upload.single('img'),
   productsController.create
 );
-productsRoutes.get('/', ensureAuthenticated, productsController.index);
-productsRoutes.get('/:id', ensureAuthenticated, productsController.show);
+productsRoutes.get('/', productsController.index);
+productsRoutes.get('/:id', productsController.show);
 productsRoutes.delete('/:id', ensureAuthenticated, productsController.delete);
-productsRoutes.patch(
-  '/img',
-  ensureAuthenticated,
-  upload.single('img'),
-  productsImgController.update
-);
 
 module.exports = productsRoutes;
