@@ -1,16 +1,30 @@
+const knex = require('../database/knex');
+const AppError = require('../utils/AppError');
 const DiskStorage = require('../providers/DiskStorage');
-const sqliteConnection = require('../database/sqlite');
 
 class ProductsImgController {
   async update(request, response) {
+    const { id } = request.params;
+
     const imgFileName = request.file.filename;
-    const database = await sqliteConnection();
     const diskStorage = new DiskStorage();
 
-    const filename = await diskStorage.saveFile(imgFileName);
+    const product = await knex('products').where({ id }).first();
 
-    await database.run('INSERT INTO products (img) VALUES (?)', [filename]);
-    return response.status(201).json();
+    if (!product) {
+      throw new AppError('O prato que você deseja editar não existe.', 401);
+    }
+
+    if (product.img) {
+      await diskStorage.deleteFile(product.img);
+    }
+
+    const filename = await diskStorage.saveFile(imgFileName);
+    product.img = filename;
+
+    await knex('products').update(product).where({ id });
+
+    return response.json(product);
   }
 }
 
