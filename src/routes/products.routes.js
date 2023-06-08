@@ -17,6 +17,7 @@ productsRoutes.post(
 );
 productsRoutes.get('/', productsController.index);
 productsRoutes.get('/:id', productsController.show);
+productsRoutes.put('/:id', productsController.update);
 productsRoutes.delete('/:id', ensureAuthenticated, productsController.delete);
 
 module.exports = productsRoutes;

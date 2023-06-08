@@ -1,5 +1,7 @@
 const knex = require('../database/knex');
 const DiskStorage = require('../providers/DiskStorage');
+const sqliteConnection = require('../database/sqlite');
+const AppError = require('../utils/AppError');
 
 class ProductsController {
   async create(request, response) {
@@ -16,7 +18,7 @@ class ProductsController {
       description,
     });
 
-    return response.json();
+    return response.json(products_ids);
   }
 
   async show(request, response) {
@@ -57,6 +59,48 @@ class ProductsController {
     }));
 
     return response.json(productsTags);
+  }
+
+  async update(request, response) {
+    const { category, name, price, description, tags } = request.body;
+
+    const { id } = request.params;
+    const database = await sqliteConnection();
+
+    const product = await knex('products').where({ id }).first();
+
+    if (!product) {
+      throw new AppError('O prato que você está tentando editar não existe!');
+    }
+    product.name = name ?? product.name;
+    product.category = category ?? product.category;
+    product.tags = tags ?? product.tags;
+    product.price = price ?? product.price;
+    product.description = description ?? product.description;
+
+    try {
+      await database.run(
+        `UPDATE products SET
+    name = (?),
+    category = (?),
+    tags = (?),
+    price = (?),
+    description = (?),
+    updated_at = DATETIME('now')
+    WHERE id = (?)`,
+        [
+          product.name,
+          product.category,
+          product.tags,
+          product.price,
+          product.description,
+          product.id,
+        ]
+      );
+      return response.json();
+    } catch {
+      throw new AppError('Erro ao tentar atualizar');
+    }
   }
 }
 
