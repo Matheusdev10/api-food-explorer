@@ -63,7 +63,6 @@ class ProductsController {
 
   async update(request, response) {
     const { category, name, price, description, tags } = request.body;
-
     const { id } = request.params;
     const database = await sqliteConnection();
 
@@ -88,14 +87,12 @@ class ProductsController {
     description = (?),
     updated_at = DATETIME('now')
     WHERE id = (?)`,
-        [
-          product.name,
-          product.category,
-          product.tags,
-          product.price,
-          product.description,
-          product.id,
-        ]
+        product.name,
+        product.category,
+        product.tags,
+        product.price,
+        product.description,
+        product.id
       );
       return response.json();
     } catch {
