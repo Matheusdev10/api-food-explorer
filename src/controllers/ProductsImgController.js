@@ -7,6 +7,8 @@ class ProductsImgController {
     const { id } = request.params;
 
     const imgFileName = request.file.filename;
+    console.log(imgFileName);
+
     const diskStorage = new DiskStorage();
 
     const product = await knex('products').where({ id }).first();
@@ -15,16 +17,17 @@ class ProductsImgController {
       throw new AppError('O prato que você deseja editar não existe.', 401);
     }
 
-    if (product.img) {
-      await diskStorage.deleteFile(product.img);
-    }
+    // if (product.img) {
+    //   await diskStorage.deleteFile(product.img);
+    // }
 
     const filename = await diskStorage.saveFile(imgFileName);
+
     product.img = filename;
 
     await knex('products').update(product).where({ id });
 
-    return response.json(product);
+    return response.json();
   }
 }
 

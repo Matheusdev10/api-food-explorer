@@ -64,7 +64,6 @@ class ProductsController {
   async update(request, response) {
     const { category, name, price, description, tags } = request.body;
     const { id } = request.params;
-    const database = await sqliteConnection();
 
     const product = await knex('products').where({ id }).first();
 
@@ -76,28 +75,11 @@ class ProductsController {
     product.tags = tags ?? product.tags;
     product.price = price ?? product.price;
     product.description = description ?? product.description;
+    product.updated_at = knex.fn.now();
 
-    try {
-      await database.run(
-        `UPDATE products SET
-    name = (?),
-    category = (?),
-    tags = (?),
-    price = (?),
-    description = (?),
-    updated_at = DATETIME('now')
-    WHERE id = (?)`,
-        product.name,
-        product.category,
-        product.tags,
-        product.price,
-        product.description,
-        product.id
-      );
-      return response.json();
-    } catch {
-      throw new AppError('Erro ao tentar atualizar');
-    }
+    await knex('products').where({ id }).update(product);
+
+    return response.status(202).json('Prato atualizado com sucesso');
   }
 }
 
