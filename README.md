@@ -4,8 +4,7 @@ Backend da aplicação foodexplorer onde o intuito foi construir uma api para in
 
 Link para acessar o [Front-end](https://github.com/Matheusdev10/food-explorer-front)!
 
-<!--
-Feel free to test: https://foodexplorer-api-qutd.onrender.com -->
+deploy back-end: https://api-food-explorer-8zqg.onrender.com
 
 Tecnologias usadas no backend:
 
@@ -13,9 +12,3 @@ Tecnologias usadas no backend:
 - NodeJS
 - SQLite (SQL)
 - Knex.js
-
-#### Usuario admin:
-
-email: useradmin@gmail.com
-
-senha: 123456
