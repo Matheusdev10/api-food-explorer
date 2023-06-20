@@ -27,7 +27,7 @@ class ProductsController {
     return response.json({
       ...product,
       tags: product.tags.split(','),
-      img: `http://localhost:3333/assets/${product.img}`,
+      img: `https://api-food-explorer-8zqg.onrender.com/assets/${product.img}`,
     });
   }
 
@@ -55,7 +55,7 @@ class ProductsController {
     const productsTags = products.map((product) => ({
       ...product,
       tags: product.tags.split(','),
-      img: `http://localhost:3333/assets/${product.img}`,
+      img: `https://api-food-explorer-8zqg.onrender.com/assets/${product.img}`,
     }));
 
     return response.json(productsTags);
