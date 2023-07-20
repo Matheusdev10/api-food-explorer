@@ -18,7 +18,7 @@ productsRoutes.post(
 );
 productsRoutes.get('/', ensureAuthenticated, productsController.index);
 productsRoutes.get('/:id', ensureAuthenticated, productsController.show);
-productsRoutes.put('/:id', ensureAuthenticated, productsController.update);
+productsRoutes.put('/:id', productsController.update);
 productsRoutes.patch(
   '/img/:id',
   upload.single('img'),
