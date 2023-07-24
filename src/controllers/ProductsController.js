@@ -28,8 +28,6 @@ class ProductsController {
       ...product,
       tags: product.tags.split(','),
       img: product.img,
-
-      // img: `https://api-food-explorer-8zqg.onrender.com/assets/${product.img}`,
     });
   }
 
@@ -58,9 +56,6 @@ class ProductsController {
       ...product,
       tags: product.tags.split(','),
       img: product.img,
-
-      // img: `https://localhost:3333/assets/${product.img}`,
-      // img: `https://api-food-explorer-8zqg.onrender.com/assets/${product.img}`,
     }));
 
     return response.json(productsTags);
